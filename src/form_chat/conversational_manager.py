@@ -69,10 +69,10 @@ class ConversationalFormManager:
                 **self.openai_config
             )
             
-            most_likely_field: str = response.choices[0].message.content.strip()
+            most_likely_field: str = response.choices[0].message.content.strip('\n ".')
             
             if most_likely_field.startswith("Identified field:"):
-                most_likely_field = most_likely_field[len("Identified field:"):].strip(' ".')
+                most_likely_field = most_likely_field[len("Identified field:"):].strip('\n\n ".')
 
 
             logger.info(f"Received response from OpenAI: {most_likely_field} for message {message}")
@@ -121,9 +121,9 @@ class ConversationalFormManager:
                 **self.openai_config
             )
             
-            extracted :str = response.choices[0].message.content.strip()
+            extracted :str = response.choices[0].message.content.strip('\n ".')
             if extracted.startswith("Extracted slot:"):
-                extracted = extracted[len("Extracted slot:"):].strip(' ".')
+                extracted = extracted[len("Extracted slot:"):].strip('\n ".')
 
             logger.info(f"Extracted: '{extracted}' from message '{message}' and field {field}")
 

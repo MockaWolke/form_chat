@@ -39,7 +39,13 @@ async function fetchNextQuestion() {
 
     if (data.status === "completed") {
         displayMessage("system", data.message);
-        document.getElementById("form-container").style.display = "none";
+
+        // Show a message and stop further interactions
+        document.getElementById("form-container").style.display = "none"; // Hide input field
+        formCompleted = true; // Mark the form as completed
+
+        // Automatically download the PDF after form completion
+        window.location.href = `http://127.0.0.1:8000/download_form`;
     } else {
         lastField = data.field;
         displayMessage("system", data.question);

@@ -1,12 +1,17 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from form_chat.forms import *
 from form_chat.hunde_form import DOG_FORM
 from form_chat.conversational_manager import ConversationalFormManager
+from form_chat.pdf import create_pdf_table
 from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
 import os
 
+
+PDF_FOLDER = "pdfs"
+os.makedirs(PDF_FOLDER, exist_ok=True)
 
 manager = ConversationalFormManager(form=DOG_FORM)
 
@@ -32,6 +37,17 @@ chat_history = []
 async def serve_frontend():
     with open(os.path.join("static", "index.html")) as f:
         return HTMLResponse(content=f.read(), status_code=200)
+
+
+@app.get("/download_form")
+def send_download_form():
+    filename = os.path.join(
+            PDF_FOLDER,
+            f"{DOG_FORM.name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.pdf"
+        )
+    
+    create_pdf_table(DOG_FORM, filename=filename)
+    return FileResponse(filename, media_type='application/pdf', filename=os.path.basename(filename))
 
 @app.get("/next_question")
 async def get_next_question():
