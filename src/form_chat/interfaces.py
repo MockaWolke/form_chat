@@ -20,25 +20,25 @@ class CHAT_LLM_Interface(ABC):
     def compute_response(self, message: str, instruction: str, history: List[MessageHistoryItem] = list()) -> str:
         pass
 
-class FormFormat(ABC):
+class FormFormatInterface(ABC):
     
     @abstractmethod
     def fill_value(self, name : str, val : Any) -> None | str:
         pass
     
-    @abstractmethod
     @property
-    def missing_values(self) -> list[str]:
+    @abstractmethod
+    def missing_values(self) -> set[str]:
         pass
     
     
-    @abstractmethod
     @property
-    def filled_values(self) -> list[str]:
+    @abstractmethod
+    def filled_values(self) -> set[str]:
         pass
     
-    @abstractmethod
     @property
+    @abstractmethod
     def description(self) -> str:
         pass
     
@@ -54,5 +54,10 @@ class FormDataBaseInterface(ABC):
         pass
     
     @abstractmethod
-    def find_form(self, str) -> FormFormat:
+    def find_form(self, str) -> FormFormatInterface:
+        pass
+    
+    @property
+    @abstractmethod
+    def all_forms(self, str) -> list[FormFormatInterface]:
         pass
