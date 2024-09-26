@@ -41,8 +41,20 @@ class ConversationalFormManager:
         {field_question_pairs}.
         The user's message is: "{message}".
         Which form field is the user most likely referring to?
-        
+
         Return only the field name!
+
+        Here are some examples to illustrate:
+
+        Beispiel 1:
+        Chatbot's question: "Wie ist Ihr Name?"
+        User's message: "Mein Name ist Max Mustermann."
+        Identified field: "name"
+
+        Beispiel 2:
+        Chatbot's question: "Was ist Ihr Geburtsdatum? (TT.MM.JJJJ)"
+        User's message: "Ich wurde am 12.04.1985 geboren."
+        Identified field: "birthday"
         """
         
         try:
@@ -56,7 +68,11 @@ class ConversationalFormManager:
                 **self.openai_config
             )
             
-            most_likely_field = response.choices[0].message.content.strip()
+            most_likely_field: str = response.choices[0].message.content.strip()
+            
+            if most_likely_field.startswith("Identified field:"):
+                most_likely_field = most_likely_field[len("Identified field:"):].strip(' "')
+
 
             logger.info(f"Received response from OpenAI: {most_likely_field} for message {message}")
 
@@ -74,9 +90,24 @@ class ConversationalFormManager:
         question = self.form.fields[field].question_in_chat
         
         prompt = f"""
-        You are doing slot extraction based on the chatbot's question: "{question}" for the field "{field}".
-        The user answered: "{message}".
-        Extract and return only the relevant part of the user message that fills the slot for the field '{field}'.
+            You are doing slot extraction based on the chatbot's question: "{question}" for the field "{field}".
+            The user answered: "{message}".
+            Extract and return only the relevant part of the user message that fills the slot for the field '{field}'.
+
+            Here are two examples to help you understand how to extract the relevant part of the user’s message:
+
+            Example 1:
+            Chatbot's question: "What is your name?"
+            User's answer: "My name is John Doe."
+            Extracted slot: "John Doe"
+
+            Example 2:
+            Chatbot's question: "What is your address?"
+            User's answer: "I live at 123 Elm Street."
+            Extracted slot: "123 Elm Street"
+
+            Now return only missing the value!
+            Extracted slot:
         """
         try:
             response = self.openai_client.chat.completions.create(
@@ -89,7 +120,9 @@ class ConversationalFormManager:
                 **self.openai_config
             )
             
-            extracted = response.choices[0].message.content.strip()
+            extracted :str = response.choices[0].message.content.strip()
+            if extracted.startswith("Extracted slot:"):
+                extracted = extracted[len("Extracted slot:"):].strip(' "')
 
             logger.info(f"Extracted: '{extracted}' from message '{message}' and field {field}")
 
@@ -107,7 +140,7 @@ class ConversationalFormManager:
         if error_message:
             return {"status": "wrong_value", "message": error_message}
         else:
-            return {"status": "success", "message": f"'{field}' was successfully filled."}
+            return {"status": "success", "message": f"'{field}' was successfully filled with '{value}'"}
 
     def compute_response(self, message: str, last_presented_field: str) -> dict:
         """

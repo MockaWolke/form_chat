@@ -29,7 +29,7 @@ def validate_birthday(birth_day: str, min_year: int = 2004) -> datetime:
 
 # Adresse Validierung (Straßenname mit Hausnummer)
 def validate_address(address: str) -> str:
-    if not re.match(r'^[A-Za-z\s]+\s\d+[a-zA-Z]?', address.strip()):
+    if not re.match(r"[A-Za-zÄÖÜäöüß\s]+\s\d+[a-zA-ZÄÖÜäöüß]?", address.strip()):
         raise ValueError("Invalid address format. Use 'Streetname Housenumber' format.")
     return address.strip()
 
@@ -78,3 +78,11 @@ class FormFormat(FormFormatInterface):
     def description(self) -> str:
         return self.desc
     
+    def __str__(self) -> str:
+        # Nicely format the filled-out values for printing
+        filled_out = []
+        for field in self.filled:
+            filled_out.append(f"{field}: {self.fields[field].question_in_chat}")
+        if not filled_out:
+            return "No fields have been filled yet."
+        return f"Form: {self.name}\n" + "\n".join(filled_out)
