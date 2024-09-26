@@ -1,5 +1,4 @@
 from form_chat.forms import *
-import re
 from openai import OpenAI
 from loguru import logger
 from dotenv import load_dotenv
@@ -55,6 +54,8 @@ class ConversationalFormManager:
         Chatbot's question: "Was ist Ihr Geburtsdatum? (TT.MM.JJJJ)"
         User's message: "Ich wurde am 12.04.1985 geboren."
         Identified field: "birthday"
+        
+        Now return only value nothing else!!
         """
         
         try:
@@ -71,7 +72,7 @@ class ConversationalFormManager:
             most_likely_field: str = response.choices[0].message.content.strip()
             
             if most_likely_field.startswith("Identified field:"):
-                most_likely_field = most_likely_field[len("Identified field:"):].strip(' "')
+                most_likely_field = most_likely_field[len("Identified field:"):].strip(' ".')
 
 
             logger.info(f"Received response from OpenAI: {most_likely_field} for message {message}")
@@ -122,7 +123,7 @@ class ConversationalFormManager:
             
             extracted :str = response.choices[0].message.content.strip()
             if extracted.startswith("Extracted slot:"):
-                extracted = extracted[len("Extracted slot:"):].strip(' "')
+                extracted = extracted[len("Extracted slot:"):].strip(' ".')
 
             logger.info(f"Extracted: '{extracted}' from message '{message}' and field {field}")
 
@@ -140,7 +141,7 @@ class ConversationalFormManager:
         if error_message:
             return {"status": "wrong_value", "message": error_message}
         else:
-            return {"status": "success", "message": f"'{field}' was successfully filled with '{value}'"}
+            return {"status": "success", "field": field, "value" : value}
 
     def compute_response(self, message: str, last_presented_field: str) -> dict:
         """

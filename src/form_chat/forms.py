@@ -8,6 +8,7 @@ import re
 class FormField:
     validation_func : callable
     question_in_chat : str
+    value : str = None
 
 def validate_name(string: str) -> str:
     string = string.strip().title()
@@ -58,6 +59,7 @@ class FormFormat(FormFormatInterface):
         try:
             
             val = self.fields[name].validation_func(val)
+            self.fields[name].value = val
         except ValueError as e:
             return str(e)
     
@@ -82,7 +84,7 @@ class FormFormat(FormFormatInterface):
         # Nicely format the filled-out values for printing
         filled_out = []
         for field in self.filled:
-            filled_out.append(f"{field}: {self.fields[field].question_in_chat}")
+            filled_out.append(f"{field}: {self.fields[field].val}")
         if not filled_out:
             return "No fields have been filled yet."
         return f"Form: {self.name}\n" + "\n".join(filled_out)
