@@ -1,6 +1,7 @@
-from .forms import *
+from .forms import FormField, FormFormat
+from .validation_funcs import *
 
-# Define the fields for the dog registration form in German
+
 dog_fields = {
     "name": FormField(validate_name, "Wie ist Ihr Name?"),
     "birthday": FormField(validate_birthday, "Was ist Ihr Geburtsdatum? (TT.MM.JJJJ)"),

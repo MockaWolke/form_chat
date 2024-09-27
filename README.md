@@ -11,8 +11,9 @@ This project is a prototype for a chatbot that assists with filling out governme
 ```
 ├── src/form_chat
 │   The main package handling all chatbot logic, form validation, and interaction flow.
-│   ├── conversational_manager.py
-│   ├── forms.py
+│   ├── conversational_manager.py 
+│   ├── forms.py 
+│   ├── validation_funcs.py
 │   ├── hunde_form.py  # Example of a government form implementation for dog registration.
 │   ├── interfaces.py
 │   └── pdf.py
