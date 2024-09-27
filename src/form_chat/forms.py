@@ -35,6 +35,27 @@ def validate_postal_code(postal_code: str) -> str:
         raise ValueError("Postcode must be exactly 5 digits.")
     return postal_code
 
+# Race Validierung (Nur Buchstaben)
+def validate_race(race: str) -> str:
+    if not race.isalpha():
+        raise ValueError("Please enter a valid dog breed.")
+    return race
+
+# Mikrochip Validierung (Nummer aus 15 stellen)
+def validate_microchipnumber(microchipnumber: str) -> str:
+    if not (microchipnumber.isdigit() and len(microchipnumber) == 15):
+        raise ValueError(f"Please enter the microchip number of your dog (15 digits) {len(microchipnumber)}")
+    return microchipnumber
+
+# Hunde Haltungsdatum
+def validate_Date(date: str) -> str:
+    try:
+        date = datetime.strptime(date.strip(), "%d.%m.%Y").date()
+    except ValueError:
+        raise ValueError("Could not parse Date. Please use DD.MM.YYYY format.")
+    return date
+
+ 
 
 class FormFormat(FormFormatInterface):
     
