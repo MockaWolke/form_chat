@@ -1,14 +1,9 @@
-from .interfaces import FormFormatInterface
+from .interfaces import FormFormatInterface, FormField
 from datetime import datetime, date
 from typing import Any
 from dataclasses import dataclass
 import re
 
-@dataclass
-class FormField:
-    validation_func : callable
-    question_in_chat : str
-    value : str = None
 
 def validate_name(string: str) -> str:
     string = string.strip().title()

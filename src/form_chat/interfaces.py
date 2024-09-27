@@ -1,24 +1,12 @@
 from abc import ABC, abstractmethod
-from enum import Enum
+from typing import Any, Optional
 from dataclasses import dataclass
-from typing import List, Any
-
-class Speaker(Enum):
-    USER = "user"
-    BOT = "bot"
-
-
 @dataclass
-class MessageHistoryItem:
-    speaker: Speaker
-    message: str
+class FormField:
+    validation_func : callable
+    question_in_chat : str
+    value : Optional[Any] = None
 
-
-class CHAT_LLM_Interface(ABC):
-
-    @abstractmethod
-    def compute_response(self, message: str, instruction: str, history: List[MessageHistoryItem] = list()) -> str:
-        pass
 
 class FormFormatInterface(ABC):
     
@@ -41,10 +29,6 @@ class FormFormatInterface(ABC):
     @abstractmethod
     def description(self) -> str:
         pass
-    
-    
-class ConversationalManagerInterface(ABC):
-    pass
     
 
 class FormDataBaseInterface(ABC):

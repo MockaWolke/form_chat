@@ -7,6 +7,7 @@ from form_chat.conversational_manager import ConversationalFormManager
 from form_chat.pdf import create_pdf_table
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
+import uvicorn # only for pip reqs 
 import os
 
 
